@@ -1,28 +1,29 @@
 #include <iostream>
 #include <fstream>
-#include <unordered_set>
-#include <unordered_map>
+#include <bitset>
+#include <vector>
 
 int main() {
-	std::ifstream input("../day_01/input.txt");
+	std::bitset<2020> bitset;
 
-	using pair = std::pair<int, int>;
-	std::unordered_set<int> single_values;
-	std::unordered_map<int, pair> double_values;
-
+	std::ifstream f_input("../day_01/input.txt");
 	int val = 0;
-	while (input >> val) {
-		if (double_values.contains(2020 - val)) {
-			pair p = double_values[2020 - val];
-			std::cout << "result found in iteration " << single_values.size() << " : " << val * p.first * p.second << '\n';
-			std::cout << val << ' ' << p.first << ' ' << p.second;
-			return 0;
-		}
+	while (f_input >> val) {
+		bitset.set(val);
+	}
 
-		for (int v : single_values) {
-			double_values[val + v] = pair{val, v};
-		}
+	for (auto a = 1; a <= 2020; a++) {
+		if (!bitset.test(a))
+			continue;
 
-		single_values.insert(val);
+		for (auto b = a + 1; (2020 - a - b) > 0 ; b++) {
+			if (!bitset.test(b))
+				continue;
+
+			if (bitset.test(2020 - a - b)) {
+				std::cout << "result : " << (a * b * (2020 - b - a));
+				return 0;
+			}
+		}
 	}
 }
